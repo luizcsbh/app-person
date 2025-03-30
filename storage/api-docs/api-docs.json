@@ -1,0 +1,2882 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API-PERSON ",
+        "description": "Documentação da API-PERSON com Swagger Service.",
+        "contact": {
+            "name": "Luiz Santos Full Stack Developer ",
+            "email": "luizcsdev@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Servidor Local"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Registrar um novo usuário",
+                "operationId": "ed42f392010c301892e640067141676e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "João Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário registrado com sucesso"
+                    },
+                    "422": {
+                        "description": "Dados inválidos"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Login do usuário",
+                "operationId": "8cb7742ae98d0990acb2907c4e00bf24",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login bem-sucedido"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Fazer logout",
+                "operationId": "0d29c740dc06d77602af8095bf4654cc",
+                "responses": {
+                    "200": {
+                        "description": "Logout bem-sucedido"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Obter informações do usuário autenticado",
+                "operationId": "59edbaa8fa646672a192bb68493f46d5",
+                "responses": {
+                    "200": {
+                        "description": "Dados do usuário autenticado"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/lotacoes": {
+            "get": {
+                "tags": [
+                    "Lotação"
+                ],
+                "summary": "Lista todos as lotações",
+                "description": "Retorna uma lista de lotações armazenados no banco de dados.",
+                "operationId": "a236253c0d49f41a6eef6f3f124a518f",
+                "responses": {
+                    "200": {
+                        "description": "Lista de lotações retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Lotacao"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum lotação encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Não há lotações cadastrados!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar as lotações",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar as lotações."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Lotação"
+                ],
+                "summary": "Cria um lotação",
+                "description": "Registra um lotação no banco de dados.",
+                "operationId": "19b19da6e0ed54bc68d6c3805870382d",
+                "requestBody": {
+                    "description": "Dados necessários para criar um lotação",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "pes_id",
+                                    "unid_id",
+                                    "lot_data_lotacao",
+                                    "lot_data_remocao",
+                                    "lot_portaria"
+                                ],
+                                "properties": {
+                                    "pes_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "unid_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "lot_data_lotacao": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2022-08-23"
+                                    },
+                                    "lot_data_remocao": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-02-12"
+                                    },
+                                    "lot_portaria": {
+                                        "type": "string",
+                                        "example": "Portaria 022/2025"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Lotação criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lotação criado com sucesso."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Lotacao"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao criar a lotação.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao criar o lotação."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/lotacoes/{id}": {
+            "get": {
+                "tags": [
+                    "Lotação"
+                ],
+                "summary": "Obtém os detalhes de uma lotação",
+                "description": "Retorna os detalhes de uma lotação em específico pelo ID.",
+                "operationId": "eafd1ead0d0c3dea7f7803abeae7fa7a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da lotação",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da lotação retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Lotacao"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Lotação não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "lotação não encontrada!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar as lotações",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar as lotações."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Lotação"
+                ],
+                "summary": "Atualiza um lotação existente",
+                "description": "Atualiza os dados de um lotação com base no ID fornecido.",
+                "operationId": "dddc6da436fd6994dd476a0ae21dabf9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do lotação a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualização do lotação",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "lotação",
+                                    "endereco"
+                                ],
+                                "properties": {
+                                    "lotacao": {
+                                        "required": [
+                                            "pes_id",
+                                            "unid_id",
+                                            "lot_data_lotacao",
+                                            "lot_data_remocao",
+                                            "lot_portaria"
+                                        ],
+                                        "properties": {
+                                            "pes_id": {
+                                                "type": "integer",
+                                                "example": "1"
+                                            },
+                                            "unid_id": {
+                                                "type": "integer",
+                                                "example": "1"
+                                            },
+                                            "lot_data_lotacao": {
+                                                "type": "integer",
+                                                "example": "2022-08-23"
+                                            },
+                                            "lot_data_remocao": {
+                                                "type": "string",
+                                                "example": "2025-02-12"
+                                            },
+                                            "lot_portaria": {
+                                                "type": "string",
+                                                "example": "Portaria 023/2025"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Lotação atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lotação atualizado com sucesso!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Lotacao"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro não encontrado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Registro não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao processar a atualização do lotação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Lotação"
+                ],
+                "summary": "Exclui um lotação",
+                "description": "Exclui um lotação do banco de dados com base no ID fornecido.",
+                "operationId": "569f8edf70d00dc5fe9c9984e2a12a21",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da lotação a ser excluído",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lotação excluída com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lotação excluída com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Lotação não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lotação não encontrada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro ao excluir o lotação devido a dependências",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao deletar o lotação. Possivelmente há dependências associadas."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao excluir o lotação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao excluir o lotação."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/lotacoes/unidade/{unid_id}/servidores": {
+            "get": {
+                "tags": [
+                    "Lotação"
+                ],
+                "summary": "Lista servidores lotados em uma unidade",
+                "description": "Retorna uma lista paginada de servidores lotados em uma unidade específica",
+                "operationId": "42b0fb4e1b1156bbc0d9f035ed364450",
+                "parameters": [
+                    {
+                        "name": "unid_id",
+                        "in": "path",
+                        "description": "ID da unidade",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Quantidade de itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número da página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de servidores retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "nome": {
+                                                        "type": "string",
+                                                        "example": "João Silva"
+                                                    },
+                                                    "idade": {
+                                                        "type": "integer",
+                                                        "example": 35
+                                                    },
+                                                    "unidade_lotacao": {
+                                                        "type": "string",
+                                                        "example": "Secretaria de Educação"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unidade não encontrada ou sem servidores lotados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade não encontrada ou sem servidores lotados"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar servidores",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar servidores"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/servidores-efetivos": {
+            "get": {
+                "tags": [
+                    "Servidor Efetivo"
+                ],
+                "summary": "Lista todos as servidores efetivos",
+                "description": "Retorna uma lista de servidores efetivos armazenados no banco de dados.",
+                "operationId": "52e4ce496fb4d158b46016deec180806",
+                "responses": {
+                    "200": {
+                        "description": "Lista de servidores efetivos retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ServidorEfetivoFull"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum servidor efetivo encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Não há servidores efetivos cadastrados!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os servidores efetivos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os servidores efetivos."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Servidor Efetivo"
+                ],
+                "summary": "Cria um servidor efetivo",
+                "description": "Registra um servidor efetivo no banco de dados.",
+                "operationId": "db3aca000330b5d6d5334b33a2b8f38c",
+                "requestBody": {
+                    "description": "Dados necessários para criar um servidor efetivo",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "pes_nome",
+                                    "pes_cpf",
+                                    "se_matricula",
+                                    "pes_data_nascimento",
+                                    "pes_sexo",
+                                    "pes_mae",
+                                    "pes_pai",
+                                    "cid_id",
+                                    "end_tipo_logradouro",
+                                    "end_logradouro",
+                                    "end_numero",
+                                    "end_bairro"
+                                ],
+                                "properties": {
+                                    "pes_nome": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "pes_cpf": {
+                                        "type": "string",
+                                        "example": "111.222.333-44"
+                                    },
+                                    "se_matricula": {
+                                        "type": "string",
+                                        "example": "2003456788467"
+                                    },
+                                    "pes_data_nascimento": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "1978-08-23T12:00:00Z"
+                                    },
+                                    "pes_sexo": {
+                                        "type": "string",
+                                        "example": "Masculino"
+                                    },
+                                    "pes_mae": {
+                                        "type": "string",
+                                        "example": "Maria Aparecida da Silva"
+                                    },
+                                    "pes_pai": {
+                                        "type": "string",
+                                        "example": "Cícero Joaquim da Silva"
+                                    },
+                                    "cid_id": {
+                                        "type": "integer",
+                                        "example": "21"
+                                    },
+                                    "end_tipo_logradouro": {
+                                        "type": "string",
+                                        "example": "Avenida"
+                                    },
+                                    "end_logradouro": {
+                                        "type": "string",
+                                        "example": "Silviano Brandão"
+                                    },
+                                    "end_numero": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "end_complemento": {
+                                        "type": "string",
+                                        "example": "Bloco E, 50 apartamento 303"
+                                    },
+                                    "end_bairro": {
+                                        "type": "string",
+                                        "example": "Horto Florestal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pessoa criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pessoa criado com sucesso."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Pessoa"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao criar o servidor efetivo.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao criar o servidor efetivo."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/servidores-efetivos/{id}": {
+            "get": {
+                "tags": [
+                    "Servidor Efetivo"
+                ],
+                "summary": "Obtém os detalhes de um servidor efetivo",
+                "description": "Retorna os detalhes de um servidor efetivo em específico pelo ID.",
+                "operationId": "f3308840d0b3259aaa6a16a1370f4060",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da servidor efetivo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da servidor efetivo retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ServidorEfetivoFull"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Servidor Efetivo não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor Efetivo não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os servidores efetivos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os servidores efetivos."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Servidor Efetivo"
+                ],
+                "summary": "Atualiza um servidor efetivo existente",
+                "description": "Atualiza os dados de um servidor efetivo com base no ID fornecido.",
+                "operationId": "6a0d14a7c97f6bc6ea869a121090774d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do servidor efetivo a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualização do servidor efetivo",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "pes_nome": {
+                                        "type": "string",
+                                        "example": "Fulano atualizado"
+                                    },
+                                    "pes_data_nascimento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2001-01-03"
+                                    },
+                                    "pes_sexo": {
+                                        "type": "string",
+                                        "example": "Masculino"
+                                    },
+                                    "pes_mae": {
+                                        "type": "string",
+                                        "example": "Maria da Silva"
+                                    },
+                                    "pes_pai": {
+                                        "type": "string",
+                                        "example": "José da Silva"
+                                    },
+                                    "end_id": {
+                                        "type": "integer",
+                                        "example": 19
+                                    },
+                                    "end_logradouro": {
+                                        "type": "string",
+                                        "example": "Rua Atualizada 123"
+                                    },
+                                    "end_numero": {
+                                        "type": "string",
+                                        "example": "456"
+                                    },
+                                    "end_tipo_logradouro": {
+                                        "type": "string",
+                                        "example": "Rua"
+                                    },
+                                    "cid_id": {
+                                        "type": "integer",
+                                        "example": 21
+                                    },
+                                    "end_complemento": {
+                                        "type": "string",
+                                        "example": "Bloco E"
+                                    },
+                                    "end_bairro": {
+                                        "type": "string",
+                                        "example": "Centro"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Servidor Efetivo atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor Efetivo atualizado com sucesso!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ServidorEfetivoFull"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro não encontrado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Registro não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao processar a atualização do servidor efetivo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Servidor Efetivo"
+                ],
+                "summary": "Exclui um servidor efetivo",
+                "description": "Exclui um servidor efetivo do banco de dados com base no ID fornecido.",
+                "operationId": "7769253db1ca2a0f2705f4d8cb7b5938",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da servidor efetivo a ser excluído",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Servidor efetivo excluído com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor efetivo excluído com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Servidor efetivo não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor efetivo não encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro ao excluir o servidor efetivo devido a dependências",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao deletar o servidor efetivo. Possivelmente há dependências associadas."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao excluir o servidor efetivo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao excluir o servidor efetivo."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/servidores-temporarios": {
+            "get": {
+                "tags": [
+                    "Servidor Temporario"
+                ],
+                "summary": "Lista todos as servidores temporarios",
+                "description": "Retorna uma lista de servidores temporarios armazenados no banco de dados.",
+                "operationId": "cda8f6f43a500bdb57c3748c315bdc13",
+                "responses": {
+                    "200": {
+                        "description": "Lista de servidores temporarios retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ServidorTemporarioFull"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum servidor temporario encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Não há servidores temporarios cadastrados!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os servidores temporarios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os servidores temporarios."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Servidor Temporario"
+                ],
+                "summary": "Cria um servidor temporario",
+                "description": "Registra um servidor temporario no banco de dados.",
+                "operationId": "f9f70bb42ddcb3aee288b56dc3564243",
+                "requestBody": {
+                    "description": "Dados necessários para criar um servidor temporario",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "pes_nome",
+                                    "pes_cpf",
+                                    "se_matricula",
+                                    "pes_data_nascimento",
+                                    "pes_sexo",
+                                    "pes_mae",
+                                    "pes_pai",
+                                    "cid_id",
+                                    "end_tipo_logradouro",
+                                    "end_logradouro",
+                                    "end_numero",
+                                    "end_bairro"
+                                ],
+                                "properties": {
+                                    "pes_nome": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "pes_cpf": {
+                                        "type": "string",
+                                        "example": "111.222.333-44"
+                                    },
+                                    "st_data_admissao": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-06-10"
+                                    },
+                                    "pes_data_nascimento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1978-08-23"
+                                    },
+                                    "pes_sexo": {
+                                        "type": "string",
+                                        "example": "Masculino"
+                                    },
+                                    "pes_mae": {
+                                        "type": "string",
+                                        "example": "Maria Aparecida da Silva"
+                                    },
+                                    "pes_pai": {
+                                        "type": "string",
+                                        "example": "Cícero Joaquim da Silva"
+                                    },
+                                    "cid_id": {
+                                        "type": "integer",
+                                        "example": "21"
+                                    },
+                                    "end_tipo_logradouro": {
+                                        "type": "string",
+                                        "example": "Avenida"
+                                    },
+                                    "end_logradouro": {
+                                        "type": "string",
+                                        "example": "Silviano Brandão"
+                                    },
+                                    "end_numero": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "end_complemento": {
+                                        "type": "string",
+                                        "example": "Bloco E, 50 apartamento 303"
+                                    },
+                                    "end_bairro": {
+                                        "type": "string",
+                                        "example": "Horto Florestal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pessoa criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pessoa criado com sucesso."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Pessoa"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao criar o servidor temporario.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao criar o servidor temporario."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/servidores-temporarios/{id}": {
+            "get": {
+                "tags": [
+                    "Servidor Temporario"
+                ],
+                "summary": "Obtém os detalhes de um servidor temporario",
+                "description": "Retorna os detalhes de um servidor temporario em específico pelo ID.",
+                "operationId": "506e94822a6574f284d004fff1d5561e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da servidor temporario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da servidor temporario retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ServidorTemporarioFull"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Servidor Temporario não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor Temporario não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os servidores temporarios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os servidores temporarios."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Servidor Temporario"
+                ],
+                "summary": "Atualiza um servidor temporario existente",
+                "description": "Atualiza os dados de uma servidor temporario com base no ID fornecido.",
+                "operationId": "5a0563d319f2fa603e581693a57c8379",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da servidor temporario a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualização da servidor temporario",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "pes_nome",
+                                    "pes_cpf",
+                                    "se_matricula",
+                                    "pes_data_nascimento",
+                                    "pes_sexo",
+                                    "pes_mae",
+                                    "pes_pai",
+                                    "cid_id",
+                                    "end_tipo_logradouro",
+                                    "end_logradouro",
+                                    "end_numero",
+                                    "end_bairro"
+                                ],
+                                "properties": {
+                                    "pes_nome": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "pes_cpf": {
+                                        "type": "string",
+                                        "example": "111.222.333-44"
+                                    },
+                                    "st_data_admissao": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-06-10"
+                                    },
+                                    "pes_data_nascimento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1978-08-23"
+                                    },
+                                    "pes_sexo": {
+                                        "type": "string",
+                                        "example": "Masculino"
+                                    },
+                                    "pes_mae": {
+                                        "type": "string",
+                                        "example": "Maria Aparecida da Silva"
+                                    },
+                                    "pes_pai": {
+                                        "type": "string",
+                                        "example": "Cícero Joaquim da Silva"
+                                    },
+                                    "cid_id": {
+                                        "type": "integer",
+                                        "example": "21"
+                                    },
+                                    "end_tipo_logradouro": {
+                                        "type": "string",
+                                        "example": "Avenida"
+                                    },
+                                    "end_logradouro": {
+                                        "type": "string",
+                                        "example": "Silviano Brandão"
+                                    },
+                                    "end_numero": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "end_complemento": {
+                                        "type": "string",
+                                        "example": "Bloco E, 50 apartamento 303"
+                                    },
+                                    "end_bairro": {
+                                        "type": "string",
+                                        "example": "Horto Florestal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Servidor Temporario atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor Temporario atualizado com sucesso!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ServidorTemporarioFull"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro não encontrado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Registro não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao processar a atualização da servidor temporario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Servidor Temporario"
+                ],
+                "summary": "Exclui um servidor temporario",
+                "description": "Exclui um servidor temporario do banco de dados com base no ID fornecido.",
+                "operationId": "90ef3909aecdde74b03410d5e9c4c425",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da servidor temporario a ser excluído",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Servidor temporario excluído com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor temporario excluído com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Servidor temporario não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Servidor temporario não encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro ao excluir o servidor temporario devido a dependências",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao deletar o servidor temporario. Possivelmente há dependências associadas."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao excluir o servidor temporario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao excluir o servidor temporario."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/unidades": {
+            "get": {
+                "tags": [
+                    "Unidade"
+                ],
+                "summary": "Lista todos as unidades",
+                "description": "Retorna uma lista de unidades armazenados no banco de dados.",
+                "operationId": "ac4d45815202ccec305966db0d0b3fcc",
+                "responses": {
+                    "200": {
+                        "description": "Lista de unidades retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Unidade"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum unidade encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Não há unidades cadastrados!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os unidades",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os unidades."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Unidade"
+                ],
+                "summary": "Cria um unidade",
+                "description": "Registra um unidade no banco de dados.",
+                "operationId": "30456808cb280227b9333f98ee71c6b4",
+                "requestBody": {
+                    "description": "Dados necessários para criar um unidade",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "unid_nome",
+                                    "unid_sigla",
+                                    "cid_id",
+                                    "end_tipo_logradouro",
+                                    "end_logradouro",
+                                    "end_numero",
+                                    "end_bairro"
+                                ],
+                                "properties": {
+                                    "unid_nome": {
+                                        "type": "string",
+                                        "example": "Secretaria de Estadual de Educação"
+                                    },
+                                    "unid_sigla": {
+                                        "type": "string",
+                                        "example": "SEEDUC"
+                                    },
+                                    "cid_id": {
+                                        "type": "integer",
+                                        "example": "21"
+                                    },
+                                    "end_tipo_logradouro": {
+                                        "type": "string",
+                                        "example": "Praça"
+                                    },
+                                    "end_logradouro": {
+                                        "type": "string",
+                                        "example": "dos Três Poderes"
+                                    },
+                                    "end_numero": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "end_complemento": {
+                                        "type": "string",
+                                        "example": "Quadra 5 lote 3"
+                                    },
+                                    "end_bairro": {
+                                        "type": "string",
+                                        "example": "Horto Florestal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Unidade criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade criado com sucesso."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Unidade"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao criar o unidade.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao criar o unidade."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/unidades/{id}": {
+            "get": {
+                "tags": [
+                    "Unidade"
+                ],
+                "summary": "Obtém os detalhes de um unidade",
+                "description": "Retorna os detalhes de um unidade em específico pelo ID.",
+                "operationId": "1d7b918ba11c60c027390b5e59bc61b8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da unidade",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da unidade retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Unidade"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unidade não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os unidades",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os unidades."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Unidade"
+                ],
+                "summary": "Atualiza um unidade existente",
+                "description": "Atualiza os dados de um unidade com base no ID fornecido.",
+                "operationId": "00d54059afb6a4e53f45c760af9e6026",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do unidade a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualização do unidade",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "unid_nome",
+                                    "unid_sigla",
+                                    "cid_id",
+                                    "end_tipo_logradouro",
+                                    "end_logradouro",
+                                    "end_numero",
+                                    "end_bairro"
+                                ],
+                                "properties": {
+                                    "unid_nome": {
+                                        "type": "string",
+                                        "example": "Secretaria de Estadual de Educação"
+                                    },
+                                    "unid_sigla": {
+                                        "type": "string",
+                                        "example": "SEEDUC"
+                                    },
+                                    "cid_id": {
+                                        "type": "integer",
+                                        "example": "21"
+                                    },
+                                    "end_tipo_logradouro": {
+                                        "type": "string",
+                                        "example": "Praça"
+                                    },
+                                    "end_logradouro": {
+                                        "type": "string",
+                                        "example": "dos Três Poderes"
+                                    },
+                                    "end_numero": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "end_complemento": {
+                                        "type": "string",
+                                        "example": "Quadra 5 lote 3"
+                                    },
+                                    "end_bairro": {
+                                        "type": "string",
+                                        "example": "Horto Florestal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Unidade atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade atualizado com sucesso!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Unidade"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro não encontrado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Registro não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao processar a atualização do unidade",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Unidade"
+                ],
+                "summary": "Exclui um unidade",
+                "description": "Exclui um unidade do banco de dados com base no ID fornecido.",
+                "operationId": "efb6a548f741ea9aaf450b8481998ce7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da unidade a ser excluído",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unidade excluído com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade excluído com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unidade não encontrada.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade não encontrada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro ao excluir o unidade devido a dependências",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao deletar a unidade. Possivelmente há dependências associadas."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao excluir a unidade",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao excluir a unidade."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Cidade": {
+                "title": "Cidade",
+                "description": "Modelo de Cidade",
+                "required": [
+                    "cid_nome",
+                    "cid_uf"
+                ],
+                "properties": {
+                    "cid_id": {
+                        "description": "ID do Cidade",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cid_nome": {
+                        "description": "Nome da cidade",
+                        "type": "string",
+                        "example": "Camaçari"
+                    },
+                    "cid_uf": {
+                        "description": "Unidade Federativa",
+                        "type": "string",
+                        "example": "BA"
+                    }
+                },
+                "type": "object"
+            },
+            "Endereco": {
+                "title": "Endereço",
+                "description": "Modelo de Endereço",
+                "required": [
+                    "cid_id",
+                    "end_tipo_logradouro",
+                    "end_logradouro",
+                    "end_numero",
+                    "end_complemento",
+                    "end_bairro"
+                ],
+                "properties": {
+                    "end_id": {
+                        "description": "ID do Endereço",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cid_id": {
+                        "description": "ID da Cidade",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "end_tipo_logradouro": {
+                        "description": "Descricão do tipo de logradouro",
+                        "type": "string",
+                        "example": "Avenida"
+                    },
+                    "end_logradouro": {
+                        "description": "Descricão do logradouro",
+                        "type": "string",
+                        "example": "Gustavo da Silveira"
+                    },
+                    "end_numero": {
+                        "description": "Número do logradouro",
+                        "type": "integer",
+                        "example": "1000"
+                    },
+                    "end_complemento": {
+                        "description": "Descricão do complemento do logradouro",
+                        "type": "string",
+                        "example": "Bloco E, 50 apartamento 303"
+                    },
+                    "end_bairro": {
+                        "description": "Bairro do logradouro",
+                        "type": "string",
+                        "example": "Horto Florestal"
+                    }
+                },
+                "type": "object"
+            },
+            "Lotacao": {
+                "title": "Lotação",
+                "description": "Modelo de Lotação",
+                "required": [
+                    "pes_id",
+                    "unid_id",
+                    "lot_data_lotacao",
+                    "lot_data_remocao",
+                    "lot_portaria"
+                ],
+                "properties": {
+                    "lot_id": {
+                        "description": "ID do Lotação",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "pes_id": {
+                        "description": "ID da Pessoa",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "unid_id": {
+                        "description": "ID da Unidade",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "lot_data_lotacao": {
+                        "description": "Data da lotação",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2021-05-01"
+                    },
+                    "lot_data_remocao": {
+                        "description": "Datada remoção",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-15"
+                    },
+                    "lot_portaria": {
+                        "description": "Portaria",
+                        "type": "string",
+                        "example": "Portaria 23.0001/24"
+                    }
+                },
+                "type": "object"
+            },
+            "Pessoa": {
+                "title": "Pessoa",
+                "description": "Modelo de Pessoa",
+                "required": [
+                    "pes_nome",
+                    "pes_cpf",
+                    "pes_data_nascimento",
+                    "pes_sexo",
+                    "pes_mae",
+                    "pes_pai"
+                ],
+                "properties": {
+                    "pes_id": {
+                        "description": "ID do Pessoa",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "pes_nome": {
+                        "description": "Nome da pessoa",
+                        "type": "string",
+                        "example": "João da Silva"
+                    },
+                    "pes_cpf": {
+                        "description": "CPF da pessoa",
+                        "type": "string",
+                        "example": "111.222.333-44"
+                    },
+                    "pes_data_nascimento": {
+                        "description": "Data de nascimento",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "1978-08-23"
+                    },
+                    "pes_sexo": {
+                        "description": "Sexo da pessoa",
+                        "type": "string",
+                        "example": "Masculino"
+                    },
+                    "pes_mae": {
+                        "description": "Nome da mãe",
+                        "type": "string",
+                        "example": "Maria Aparecida da Silva"
+                    },
+                    "pes_pai": {
+                        "description": "Nome da pai",
+                        "type": "string",
+                        "example": "Cícero Joaquim da Silva"
+                    }
+                },
+                "type": "object"
+            },
+            "ServidorEfetivoFull": {
+                "properties": {
+                    "pessoa": {
+                        "$ref": "#/components/schemas/PessoaFull"
+                    },
+                    "criado_em": {
+                        "type": "string",
+                        "example": "24/03/2025 21:21"
+                    }
+                },
+                "type": "object"
+            },
+            "PessoaFull": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 22
+                    },
+                    "nome": {
+                        "type": "string",
+                        "example": "João da Silva"
+                    },
+                    "matricula": {
+                        "type": "string",
+                        "example": "2003456788467"
+                    },
+                    "Data de nascimento": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1978-08-23"
+                    },
+                    "Cadastro de Pessoa Físsica": {
+                        "type": "string",
+                        "example": "111.222.333-44"
+                    },
+                    "enderecos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EnderecoFull"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EnderecoFull": {
+                "properties": {
+                    "logradouro": {
+                        "type": "string",
+                        "example": "Silviano Brandão"
+                    },
+                    "numero": {
+                        "type": "string",
+                        "example": "1000"
+                    },
+                    "complemento": {
+                        "type": "string",
+                        "example": "Bloco E, 50 apartamento 303"
+                    },
+                    "bairro": {
+                        "type": "string",
+                        "example": "Horto Florestal"
+                    },
+                    "cidade_id": {
+                        "type": "integer",
+                        "example": 21
+                    }
+                },
+                "type": "object"
+            },
+            "ServidorTemporarioFull": {
+                "properties": {
+                    "pessoa": {
+                        "$ref": "#/components/schemas/PessoaTemp"
+                    },
+                    "criado_em": {
+                        "type": "string",
+                        "example": "24/03/2025 21:21"
+                    }
+                },
+                "type": "object"
+            },
+            "PessoaTemp": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 22
+                    },
+                    "nome": {
+                        "type": "string",
+                        "example": "João da Silva"
+                    },
+                    "Data de admissão": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2022-11-17"
+                    },
+                    "Data de demissão": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-08-23"
+                    },
+                    "Data Nascimento": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1978-08-23"
+                    },
+                    "enderecos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EnderecoTemp"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EnderecoTemp": {
+                "properties": {
+                    "logradouro": {
+                        "type": "string",
+                        "example": "Silviano Brandão"
+                    },
+                    "numero": {
+                        "type": "string",
+                        "example": "1000"
+                    },
+                    "complemento": {
+                        "type": "string",
+                        "example": "Bloco E, 50 apartamento 303"
+                    },
+                    "bairro": {
+                        "type": "string",
+                        "example": "Horto Florestal"
+                    },
+                    "cidade_id": {
+                        "type": "integer",
+                        "example": 21
+                    }
+                },
+                "type": "object"
+            },
+            "Unidade": {
+                "title": "Unidade",
+                "description": "Modelo da Unidade",
+                "required": [
+                    "unid_nome",
+                    "unid_sigla"
+                ],
+                "properties": {
+                    "unid_id": {
+                        "description": "ID da Unidade",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "unid_nome": {
+                        "description": "Nome da unidade",
+                        "type": "string",
+                        "example": "Secretária de Planejamento"
+                    },
+                    "unid_sigla": {
+                        "description": "Sigla da unidade",
+                        "type": "string",
+                        "example": "SEPLAG"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Digite \"Bearer {token}\" para se autenticar.",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticação"
+        },
+        {
+            "name": "Servidor Efetivo",
+            "description": "Gerenciamento dos servidores efetivos"
+        },
+        {
+            "name": "Servidor Temporario",
+            "description": "Gerenciamento dos servidores temporarios"
+        },
+        {
+            "name": "Unidade",
+            "description": "Gerenciamento das unidades"
+        },
+        {
+            "name": "Lotação",
+            "description": "Gerenciamento das lotações"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}
