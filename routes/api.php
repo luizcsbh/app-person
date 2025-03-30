@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FotoPessoaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\LotacaoController;
@@ -26,14 +27,20 @@ Route::middleware(['auth:sanctum', 'expire.token'])->group(function() {
     });
     
     // Rotas de recursos
-    Route::apiResource('unidades', UnidadeController::class);
-    Route::apiResource('lotacoes', LotacaoController::class);
-    Route::apiResource('servidores-efetivos', ServidorEfetivoController::class);
-    Route::apiResource('servidores-temporarios', ServidorTemporarioController::class);
+    Route::resource('unidades', UnidadeController::class);
+    Route::resource('lotacoes', LotacaoController::class);
+    Route::resource('servidores-efetivos', ServidorEfetivoController::class);
+    Route::resource('servidores-temporarios', ServidorTemporarioController::class);
     
     // Rotas customizadas
     Route::get('lotacoes/unidade/{unid_id}/servidores', [LotacaoController::class, 'servidoresPorUnidade'])
         ->name('lotacoes.servidores-por-unidade');
+
+    Route::prefix('fotos-pessoa')->group(function() {
+        Route::post('/', [FotoPessoaController::class, 'store']);
+        Route::get('/{id}', [FotoPessoaController::class, 'show']);
+        Route::delete('/{id}', [FotoPessoaController::class, 'destroy']);
+    });
 });
 
 /*----------------------------------------------------------

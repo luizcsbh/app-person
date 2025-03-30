@@ -153,6 +153,93 @@
                 ]
             }
         },
+        "/api/fotos-pessoa": {
+            "post": {
+                "tags": [
+                    "Fotos"
+                ],
+                "summary": "Upload de foto de pessoa",
+                "operationId": "6263382d88ba4c24dde1ae321ba5e3d1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "pes_id",
+                                    "foto"
+                                ],
+                                "properties": {
+                                    "pes_id": {
+                                        "type": "string",
+                                        "example": "uuid"
+                                    },
+                                    "foto": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Foto armazenada com sucesso"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            }
+        },
+        "/api/fotos-pessoa/{id}": {
+            "get": {
+                "tags": [
+                    "Fotos"
+                ],
+                "summary": "Obter foto de pessoa",
+                "operationId": "9d99732474e766fd92263967b193cd3f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados da foto"
+                    },
+                    "404": {
+                        "description": "Foto não encontrada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Fotos"
+                ],
+                "summary": "Remover foto de pessoa",
+                "operationId": "c46580d0c8b45bf0cf32ed3be4a0fd0e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Foto removida"
+                    },
+                    "404": {
+                        "description": "Foto não encontrada"
+                    }
+                }
+            }
+        },
         "/lotacoes": {
             "get": {
                 "tags": [
@@ -2872,6 +2959,10 @@
         {
             "name": "Lotação",
             "description": "Gerenciamento das lotações"
+        },
+        {
+            "name": "Fotos",
+            "description": "Fotos"
         }
     ],
     "security": [

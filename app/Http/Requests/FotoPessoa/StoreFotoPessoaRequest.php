@@ -3,6 +3,9 @@
 namespace App\Http\Requests\FotoPessoa;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class StoreFotoPessoaRequest extends FormRequest
 {
@@ -11,11 +14,25 @@ class StoreFotoPessoaRequest extends FormRequest
         return true;
     }
 
-    public function rules()
+   /**
+    * Valida o arquivo de imagem
+    * 
+    * @param UploadedFile $file
+    * @throws ValidationException
+    */
+    protected function validateFile(UploadedFile $file)
     {
-        return [
-            'pes_id' => 'required|uuid|exists:pessoas,pes_id',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ];
+        $validator = Validator::make(['file' => $file], [
+            'file' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,jpg,gif',
+                'max:5120' // 5MB
+            ]
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
     }
 }

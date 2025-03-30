@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;  // Importação necessária
+use Illuminate\Support\Facades\Storage;  
 
 class FotoPessoaResource extends JsonResource
 {

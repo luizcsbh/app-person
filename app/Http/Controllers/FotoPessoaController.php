@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFotoPessoaRequest;
+
 use App\Services\FotoPessoaService;
 use Illuminate\Http\Response;
 use App\Http\Resources\FotoPessoaResource;
@@ -36,10 +36,10 @@ class FotoPessoaController extends Controller
      *     @OA\Response(response=422, description="Erro de validação")
      * )
      */
-    public function store(StoreFotoPessoaRequest $request)
+    public function store( $request)
     {
         try {
-            $foto = $this->service->uploadFoto(
+            $foto = $this->service->storeFoto(
                 $request->only('pes_id'),
                 $request->file('foto')
             );
