@@ -60,4 +60,9 @@ class ServidorEfetivo extends Model
     {
         return $this->belongsTo(Pessoa::class, 'pes_id');
     }
+
+    public function lotacao()
+    {
+        return $this->hasMany(Lotacao::class, 'pes_id');
+    }
 }

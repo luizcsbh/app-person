@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ServidorEfetivo;
+use App\Models\Pessoa;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Contracts\ServidorEfetivoRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,7 +14,8 @@ class ServidorEfetivoRepository implements ServidorEfetivoRepositoryInterface
      * @param ServidorEfetivo $model Instância do modelo ServidorEfetivo
      */
     public function __construct(private ServidorEfetivo $model)
-    {}
+    {
+    }
 
     /**
      * Retorna todos os servidores efetivos com relacionamentos
@@ -36,6 +38,7 @@ class ServidorEfetivoRepository implements ServidorEfetivoRepositoryInterface
     public function paginateWithRelations(int $perPage = 10, array $relations = []): LengthAwarePaginator
     {
         return $this->model
+            ->orderBy('pes_id', 'asc')
             ->with($relations)
             ->paginate($perPage);
     }
@@ -135,4 +138,28 @@ class ServidorEfetivoRepository implements ServidorEfetivoRepositoryInterface
     {
         return $servidor->load($relations);
     }
+
+    public function buscarEnderecoPorNomeServidor(string $parteNome): Collection
+    {
+        return Pessoa::where('pes_nome', 'like', "%{$parteNome}%")
+        ->whereHas('servidores_efetivos', function ($query) {
+            $query->whereHas('lotacoes', function ($query) {
+                $query->whereHas('unidades', function ($query) {
+                    $query->with(['enderecos']);
+                });
+            });
+        })
+        ->with([
+            'servidores_efetivo.lotacoes.unidades.enderecos'
+        ])
+        ->get()
+            ->map(function($servidor) {
+                return [
+                    'servidor' => $servidor->pes_nome,
+                    'unidade' => $servidor->lotacao->unidade->unid_nome,
+                    'endereco' => $servidor->lotacao->unidade->endereco
+                ];
+            });
+    }
+    
 }

@@ -1474,6 +1474,49 @@
                 ]
             }
         },
+        "/servidores-efetivos/endereco-funcional": {
+            "get": {
+                "tags": [
+                    "Servidor Efetivo"
+                ],
+                "summary": "Consulta endereço funcional por nome do servidor",
+                "operationId": "01c4b9c4375c532807fbfc4bd06eeeea",
+                "parameters": [
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Parte do nome do servidor",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Endereço funcional encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Endereco"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum resultado encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/servidores-temporarios": {
             "get": {
                 "tags": [

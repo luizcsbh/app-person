@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\Servidor\Efetivo\StoreServidorEfetivoRequest;
 use App\Http\Requests\Servidor\Efetivo\UpdateServidorEfetivoRequest;
+use App\Http\Resources\EnderecoUnidadeResource;
 use App\Http\Resources\ServidorEfetivoResource;
 use App\Services\ServidorEfetivoService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -64,7 +65,7 @@ class ServidorEfetivoController extends Controller
         try {
             $perPage = $request->input('per_page', 10);
             $servidoresEfetivos = $this->servidorEfetivoService->paginate($perPage);
-    
+            
             if ($servidoresEfetivos->total() === 0) {
                 return response()->json([
                     'success' => false,
@@ -137,7 +138,7 @@ class ServidorEfetivoController extends Controller
         
         try {
 
-            $servidorEfetivo = $this->servidorEfetivoService->getById($id);
+            $servidorEfetivo = $this->servidorEfetivoService->getById((int)$id);
             return new ServidorEfetivoResource($servidorEfetivo);
 
         } catch (ResourceNotFoundException $e) {
@@ -378,5 +379,50 @@ class ServidorEfetivoController extends Controller
             return ApiResponse::handleException($e);
         }
     }
+
+        /**
+     * @OA\Get(
+     *     path="/servidores-efetivos/endereco-funcional",
+     *     summary="Consulta endereço funcional por nome do servidor",
+     *     tags={"Servidor Efetivo"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="nome",
+     *         in="query",
+     *         description="Parte do nome do servidor",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Endereço funcional encontrado",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Endereco")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Nenhum resultado encontrado"
+     *     )
+     * )
+     */
+    public function consultarEnderecoFuncional(Request $request)
+    {
+        $request->validate([
+            'nome' => 'required|string|min:3'
+        ]);
+
+        $resultados = $this->servidorEfetivoService->consultarEnderecoPorNome($request->input('nome'));
+
+        if ($resultados->isEmpty()) {
+            return response()->json([
+                'message' => 'Nenhum servidor encontrado com o nome informado'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return EnderecoUnidadeResource::collection($resultados);
+    }
+
 }
 

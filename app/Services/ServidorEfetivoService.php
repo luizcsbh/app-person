@@ -271,4 +271,9 @@ class ServidorEfetivoService
         }
     }
 
+    public function consultarEnderecoPorNome(string $parteNome)
+    {
+        return $this->servidorEfetivoRepository->buscarEnderecoPorNomeServidor($parteNome);
+    }
+
 }

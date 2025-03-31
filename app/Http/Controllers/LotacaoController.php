@@ -441,7 +441,7 @@ class LotacaoController extends Controller
         try {
             $perPage = $request->input('per_page', 10);
             $servidores = $this->lotacaoService->getServidoresPorUnidade($unidId, $perPage);
-
+           
             if ($servidores->isEmpty()) {
                 return response()->json([
                     'success' => false,

@@ -130,8 +130,8 @@ class PessoaService
     public function checkDependencies(Pessoa $pessoa): void
     {
         $dependencies = [
-            'fotos' => 'fotos associadas',
-            'lotacoes' => 'lotações associadas',
+            'foto' => 'foto associadas',
+            'lotacao' => 'lotações associadas',
             'ServidorTemporario' => 'servidores temporários associados',
             'servidorEfetivo' => 'servidor efetivo associado',
             'enderecos' => 'endereços associados'

@@ -36,6 +36,8 @@ Route::middleware(['auth:sanctum', 'expire.token'])->group(function() {
     Route::get('lotacoes/unidade/{unid_id}/servidores', [LotacaoController::class, 'servidoresPorUnidade'])
         ->name('lotacoes.servidores-por-unidade');
 
+    Route::get('/servidores-efetivos/endereco-funcional', [ServidorEfetivoController::class, 'consultarEnderecoFuncional']);
+
     Route::prefix('fotos-pessoa')->group(function() {
         Route::post('/', [FotoPessoaController::class, 'store']);
         Route::get('/{id}', [FotoPessoaController::class, 'show']);
