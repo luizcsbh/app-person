@@ -77,33 +77,56 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        // Verifica se é uma requisição POST
+        if (!$request->isMethod('post')) {
+            return response()->json([
+                'errors' => [
+                    'method' => ['O método GET não é suportado para esta rota. Use POST.']
+                ],
+                'message' => 'Método não permitido'
+            ], 405);
+        }
+
+        // Validação dos campos
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string'
+        ], [
+            'email.required' => 'O campo email é obrigatório.',
+            'email.email' => 'O email deve ser um endereço válido.',
+            'password.required' => 'O campo senha é obrigatório.'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'errors' => $validator->errors(),
+                'message' => 'Erro de validação'
+            ], 422);
         }
 
+        // Busca o usuário
         $user = User::where('email', $request->email)->first();
 
+        // Verifica credenciais
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Credenciais inválidas!'], 401);
+            return response()->json([
+                'errors' => [
+                    'credentials' => ['Credenciais inválidas']
+                ],
+                'message' => 'Falha na autenticação'
+            ], 401);
         }
 
-        // Criar token com expiração de 5 minutos
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        $user->tokens()->latest()->first()->update([
-            'expires_at' => now()->addMinutes(10),
-        ]);
+        // Cria token com expiração
+        $token = $user->createToken('auth_token', ['*'], now()->addMinutes(5))->plainTextToken;
 
         return response()->json([
-            'message' => 'Login bem-sucedido!',
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'expires_at' => now()->addMinutes(5)->toDateTimeString(),
+            'data' => [
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'expires_at' => now()->addMinutes(5)->toDateTimeString()
+            ],
+            'message' => 'Login bem-sucedido'
         ], 200);
     }
 

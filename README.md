@@ -77,7 +77,112 @@ Acessar container:
 bash
 Copy
 docker-compose exec app bash
-```
+
+  {
+    "pes_nome": "Carlos Eduardo Silva",
+    "se_matricula": "2024-001",
+    "pes_data_nascimento": "2006-03-15",
+    "pes_cpf": "145.876.234-90",
+    "pes_sexo": "Masculino",
+    "pes_mae": "Ana Paula Silva",
+    "pes_pai": "José Carlos Silva",
+    "end_tipo_logradouro": "Rua",
+    "end_logradouro": "das Acácias",
+    "end_numero": 125,
+    "end_complemento": "Apto 302",
+    "end_bairro": "Centro",
+    "cid_id": 12
+  },
+  {
+    "pes_nome": "Fernanda Lima Oliveira",
+    "se_matricula": "2024-002",
+    "pes_data_nascimento": "2005-11-28",
+    "pes_cpf": "987.543.120-34",
+    "pes_sexo": "Feminino",
+    "pes_mae": "Beatriz Lima",
+    "pes_pai": "Marcos Oliveira",
+    "end_tipo_logradouro": "Avenida",
+    "end_logradouro": "Brasil",
+    "end_numero": 1500,
+    "end_complemento": "Casa 2",
+    "end_bairro": "Jardim América",
+    "cid_id": 7
+  },
+  {
+    "pes_nome": "Ricardo Alves Santos",
+    "se_matricula": "2024-003",
+    "pes_data_nascimento": "2007-01-10",
+    "pes_cpf": "234.765.891-02",
+    "pes_sexo": "Masculino",
+    "pes_mae": "Patrícia Alves",
+    "pes_pai": "Antônio Santos",
+    "end_tipo_logradouro": "Travessa",
+    "end_logradouro": "São Francisco",
+    "end_numero": 45,
+    "end_complemento": "",
+    "end_bairro": "Vila Nova",
+    "cid_id": 23
+  },
+  {
+    "pes_nome": "Juliana Costa Pereira",
+    "se_matricula": "2024-004",
+    "pes_data_nascimento": "2006-07-22",
+    "pes_cpf": "876.234.519-43",
+    "pes_sexo": "Feminino",
+    "pes_mae": "Márcia Costa",
+    "pes_pai": "Roberto Pereira",
+    "end_tipo_logradouro": "Rua",
+    "end_logradouro": "XV de Novembro",
+    "end_numero": 780,
+    "end_complemento": "Fundos",
+    "end_bairro": "Centro",
+    "cid_id": 5
+  },
+  {
+    "pes_nome": "Lucas Martins Rocha",
+    "se_matricula": "2024-005",
+    "pes_data_nascimento": "2005-09-05",
+    "pes_cpf": "543.128.967-05",
+    "pes_sexo": "Masculino",
+    "pes_mae": "Tatiana Martins",
+    "pes_pai": "Felipe Rocha",
+    "end_tipo_logradouro": "Alameda",
+    "end_logradouro": "dos Ipês",
+    "end_numero": 230,
+    "end_complemento": "Bloco B",
+    "end_bairro": "Jardim das Flores",
+    "cid_id": 18
+  },
+  {
+    "pes_nome": "Amanda Souza Vieira",
+    "se_matricula": "2024-006",
+    "pes_data_nascimento": "2007-04-30",
+    "pes_cpf": "321.654.098-76",
+    "pes_sexo": "Feminino",
+    "pes_mae": "Daniela Souza",
+    "pes_pai": "Alexandre Vieira",
+    "end_tipo_logradouro": "Avenida",
+    "end_logradouro": "Paulista",
+    "end_numero": 2200,
+    "end_complemento": "Conjunto 45",
+    "end_bairro": "Bela Vista",
+    "cid_id": 31
+  },
+  {
+    "pes_nome": "Gabriel Nunes Ferreira",
+    "se_matricula": "2024-007",
+    "pes_data_nascimento": "2006-12-12",
+    "pes_cpf": "765.432.019-28",
+    "pes_sexo": "Masculino",
+    "pes_mae": "Simone Nunes",
+    "pes_pai": "Paulo Ferreira",
+    "end_tipo_logradouro": "Rua",
+    "end_logradouro": "das Palmeiras",
+    "end_numero": 89,
+    "end_complemento": "",
+    "end_bairro": "Vila Olímpia",
+    "cid_id": 9
+  }
 
 ## Security Vulnerabilities
 

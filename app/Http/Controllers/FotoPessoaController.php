@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\FotoPessoa\StoreFotoPessoaRequest;
 use App\Services\FotoPessoaService;
 use Illuminate\Http\Response;
 use App\Http\Resources\FotoPessoaResource;
 
 class FotoPessoaController extends Controller
 {
-    protected $service;
+    protected $fotoPessoaService;
 
-    public function __construct(FotoPessoaService $service)
+    public function __construct(FotoPessoaService $fotoPessoaService)
     {
-        $this->service = $service;
+        $this->fotoPessoaService = $fotoPessoaService;
     }
 
     /**
@@ -36,10 +36,10 @@ class FotoPessoaController extends Controller
      *     @OA\Response(response=422, description="Erro de validação")
      * )
      */
-    public function store( $request)
+    public function store(StoreFotoPessoaRequest $request)
     {
         try {
-            $foto = $this->service->storeFoto(
+            $foto = $this->fotoPessoaService->storeFoto(
                 $request->only('pes_id'),
                 $request->file('foto')
             );
@@ -69,7 +69,7 @@ class FotoPessoaController extends Controller
     public function show(string $id)
     {
         try {
-            $foto = $this->service->getFoto($id);
+            $foto = $this->fotoPessoaService->getFoto($id);
             return new FotoPessoaResource($foto);
             
         } catch (\Exception $e) {
@@ -77,6 +77,7 @@ class FotoPessoaController extends Controller
                 'message' => 'Foto não encontrada'
             ], Response::HTTP_NOT_FOUND);
         }
+        
     }
 
     /**
@@ -92,7 +93,7 @@ class FotoPessoaController extends Controller
     public function destroy(string $id)
     {
         try {
-            $this->service->removeFoto($id);
+            $this->fotoPessoaService->removeFoto($id);
             return response()->noContent();
             
         } catch (\Exception $e) {
