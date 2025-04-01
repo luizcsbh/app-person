@@ -1,86 +1,197 @@
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  APP-PERSON
 </p>
+O projeto API REST desenvolvida em PHP com Laravel de acordo com o modelo de banco de dados abaixo:
 
-[![lincença](https://img.shields.io/github/license/app-person)](https://github.com/luizcsbh/app-person/blob/main/LICENSE)
+![API-Crédito](https://github.com/luizcsbh/app-person/raw/main/assets/Modelo.jpg)
 
+# Requesitos do Sistema
+Linguagem de programação PHP.
 
-https://github.com/luizcsbh/app-person
-Comandos para Construir e Executar
-Crie a estrutura de diretórios:
+Container com Sertvidor Min.io para armazenamento de objetos S3 ![MinIO](https://min.io/).
 
-bash
-Copy
+Container com Servidor de banco de dados PostgreSQL.
+
+# Requisitos Gerais
+  A. Implementar mecanismo de autorização e autenticação, bem como não
+permitir acesso ao endpoint a partir de domínios diversos do qual estará
+hospedado o serviço;
+
+  B. A solução de autenticação deverá expirar a cada 5 minutos e oferecer a
+possibilidade de renovação do período;
+
+  C. Implementar pelo menos os verbos post, put, get;
+
+  D. Conter recursos de paginação em todas as consultas;
+
+  E. Os dados produzidos deverão ser armazenados no servidor de banco
+de dados previamente criado em container;
+
+  F. Orquestrar a solução final utilizando Docker Compose de modo que inclua todos os contêineres utilizados.
+
+# Requisitos Específicos:
+Implementar uma API Rest para o diagrama de banco de dados acima
+tomando por base as seguintes orientações:
+
+Criar um CRUD para Servidor Efetivo, Servidor Temporário, Unidade e
+Lotação. Deverá ser contemplado a inclusão e edição dos dados das
+tabelas relacionadas;
+
+Criar um endpoint que permita consultar os servidores efetivos lotados
+em determinada unidade parametrizando a consulta pelo atributo unid_id;
+Retornar os seguintes campos: Nome, idade, unidade de lotação e
+fotografia;
+
+Criar um endpoint que permita consultar o endereço funcional (da unidade
+onde o servidor é lotado) a partir de uma parte do nome do servidor
+efetivo.
+
+Realizar o upload de uma ou mais fotografias enviando-as para o Min.IO;
+
+A recuperação das imagens deverá ser através de links temporários
+gerados pela biblioteca do Min.IO com tempo de expiração de 5 minutos.
+Instruções:
+
+A. O projeto deverá estar disponível no Github
+- Crie um arquivo README.md contendo seus dados de inscrição
+bem como orientações de como executar e testar a solução apresentada.
+
+- Decorrido o prazo de entrega, nenhum outro commit deverá ser
+enviado ao repositório do projeto.
+
+- Adicione as dependências que considerar necessárias;
+
+- Deverá estar disponível no repositório de versionamento todos
+os arquivos e scripts utilizados para a solução.
+
+# Como executar o Projeto
+
+## Pré-requisitos
+ - Docker e Docker Compose instalados;
+ - Git para clonar o repositório
+
+## 1. Clonar Repositório
+Primeiro passo realizar o clone do repositório por ssh:
+
+```ssh
+git@github.com:luizcsbh/app-person.git
+```
+ou por git:
+
+```git
+git clone https://github.com/luizcsbh/app-person.git
+
+cd app-person
+````
+## 2. Configurar variáveis de ambiente
+Crie um arquivo .env baseado no .env.example e configure as variáveis
+
+```env
+cp .env.example .env
+````
+### 2.1. Variáveis de Usuário
+O projeto utiliza as seguintes variáveis  para garantir as permissões corretas nos containers, no arquivo .env crie as linhas:
+
+```ini
+UID=1000  # User ID do usuário host
+GID=1000  # Group ID do usuário host
+```
+
+### 2.2. Estrutura de Diretórios
+Antes de iniciar os container, certifique que na raiz do projeto existe o diretório abaixo. Senão tiver crie a seguintes estruturas de diretórios:
+
+```bash
 mkdir -p docker/{postgres/conf,postgres/initdb,minio/config,volumes/postgres_data,volumes/minio_data}
-Defina as permissões:
+```
 
-bash
-Copy
+### 2.3. Configuração de Permissões
+Define as permissões para os volumes:
+
+```bash
 sudo chown -R $USER:$USER docker/volumes/
 sudo chmod -R 775 docker/volumes/
-Crie um arquivo .env na raiz do projeto:
+```
 
-ini
-Copy
-# Configurações do sistema
-UID=1000
-GID=1000
+## 3. Configuração do Docker
+No arquivo .env do projeto configure conforme suas necessidades. As principais configurações incluem:
 
-# Banco de dados
-DB_PASSWORD=SuaSenhaForteAqui123!
+```ini
+# Configurações do PostgreSQL
+DB_HOST=db
+DB_PORT=5432
+DB_DATABASE=seu_banco
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
 
-# MinIO
-MINIO_ACCESS_KEY=SeuAccessKeyMinIO
-MINIO_SECRET_KEY=SuaSenhaForteMinIO123!
-Construa e execute os containers:
+#COnfiguração banco
+POSTGRES_DB=seu_banco
+POSTGRES_USER=seu_usuario
+POSTGRES_PASSWORD=sua_senha
 
-bash
-Copy
-docker-compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g) && docker-compose up -d
-Execute os comandos de configuração do Laravel:
+# Configurações do MinIO
+FILESYSTEM_DISK=minio
+MINIO_ENDPOINT=http://minio:9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=seu_bucket
+MINIO_URL=http://localhost:9000
+```
+certifique que variáveis estão defidamente configuradas e configure se for o caso no docker-compose 
 
-bash
-Copy
+### 3.1. Comandos para Execução 
+#### 3.1.1 Construir e iniciar os containers:
+
+```bash
+docker=compose up -d --build
+```
+#### 3.1.2
+Instalar dependências:
+
+```bash
+docker-compose exec app composer install
+```
+#### 3.1.3 Configurar aplicação:
+
+```bash
 docker-compose exec app composer install
 docker-compose exec app php artisan key:generate
-docker-compose exec app php artisan storage:link
 docker-compose exec app php artisan migrate --seed
-Configure o MinIO:
+docker-compose exec app php artisan storage:link
+```
+Observação: é necessário rodar a migration --seed para popular a tabela Cidades onde de 1 a 20 são cid_id cidades de São Paulo, 21 a 40 Cidades de Minas Gerais, 41 a 60 cidades do Rio de Janeiro, 61 a 80 cidades do Mato Grosso, 81 a 100 cidades do Distrito Federal e 101 a 120 cidades do Tocantis.
 
-Acesse http://localhost:9001
 
-Credenciais: minioadmin / minioadmin (ou as que você definiu no .env)
+# 4. Acesando os Serviços
 
-Crie um bucket chamado laravel-app
+- Aplicação: http://localhost:8000
+- MinIO Console: http://localhost:9001
+- Swagger: http://localhost:8000/api/documentation
+- Banco de Dados:
+  - Host: db
+  - Porta: 5432
 
-Verificação Final
-Aplicação Laravel: http://localhost:8000
+# Notas Importantes
+1. O diretório docker/volumes/ armazena dados persistentes,
+2. Scripts SQL iniciais podem ser colocados em docker/postgres/initdb/
+3. Configurações personalizadas do PostgreSQL podem ser adicionadas em docker/postgres/conf/
 
-MinIO Console: http://localhost:9001
+# 5. Parando os Containers
+Para desligar o ambiente:
 
-PostgreSQL: Verifique conexão na porta 5432
+```bash
+docker-compose down
+```
+Para remover complemente os volumes (cuidado - isso apagará todos os dados):
 
-Comandos Adicionais Úteis
-Reconstruir a aplicação:
+```bash
+docker-compose down -v
+```
+# Criando um servidor efetivo
+Para criar um servidor efetivo acesse a rota: http://localhost:8000/api/servidores-efetivos
+ abaixo alguns modelos de arquivo json
 
-bash
-Copy
-docker-compose build app && docker-compose up -d
-Visualizar logs:
-
-bash
-Copy
-docker-compose logs -f app
-Acessar container:
-
-bash
-Copy
-docker-compose exec app bash
-
+```json
   {
     "pes_nome": "Carlos Eduardo Silva",
     "se_matricula": "2024-001",
@@ -95,7 +206,10 @@ docker-compose exec app bash
     "end_complemento": "Apto 302",
     "end_bairro": "Centro",
     "cid_id": 12
-  },
+  }
+  ```
+
+  ```json
   {
     "pes_nome": "Fernanda Lima Oliveira",
     "se_matricula": "2024-002",
@@ -110,7 +224,10 @@ docker-compose exec app bash
     "end_complemento": "Casa 2",
     "end_bairro": "Jardim América",
     "cid_id": 7
-  },
+  }
+  ```
+
+  ```json
   {
     "pes_nome": "Ricardo Alves Santos",
     "se_matricula": "2024-003",
@@ -125,7 +242,10 @@ docker-compose exec app bash
     "end_complemento": "",
     "end_bairro": "Vila Nova",
     "cid_id": 23
-  },
+  }
+  ```
+
+  ```json
   {
     "pes_nome": "Juliana Costa Pereira",
     "se_matricula": "2024-004",
@@ -140,7 +260,10 @@ docker-compose exec app bash
     "end_complemento": "Fundos",
     "end_bairro": "Centro",
     "cid_id": 5
-  },
+  }
+  ```
+
+  ```json
   {
     "pes_nome": "Lucas Martins Rocha",
     "se_matricula": "2024-005",
@@ -155,7 +278,10 @@ docker-compose exec app bash
     "end_complemento": "Bloco B",
     "end_bairro": "Jardim das Flores",
     "cid_id": 18
-  },
+  }
+  ```
+
+  ```json
   {
     "pes_nome": "Amanda Souza Vieira",
     "se_matricula": "2024-006",
@@ -170,7 +296,10 @@ docker-compose exec app bash
     "end_complemento": "Conjunto 45",
     "end_bairro": "Bela Vista",
     "cid_id": 31
-  },
+  }
+  ```
+
+  ```json
   {
     "pes_nome": "Gabriel Nunes Ferreira",
     "se_matricula": "2024-007",
@@ -186,11 +315,47 @@ docker-compose exec app bash
     "end_bairro": "Vila Olímpia",
     "cid_id": 9
   }
+  ```
+Para atualizar um servidor efetivo acesse a rota http://127.0.0.1:8000/api/servidores-efetivos/{id}
+você pode atualizar todos os dados conforme o exemplo abaixo:
 
-## Security Vulnerabilities
+```json
+  {
+    "pes_nome": "Gabriel Nunes Ferreira",
+    "se_matricula": "2024-007",
+    "pes_data_nascimento": "2006-12-12",
+    "pes_cpf": "765.432.019-28",
+    "pes_sexo": "Masculino",
+    "pes_mae": "Simone Nunes",
+    "pes_pai": "Paulo Ferreira",
+    "end_tipo_logradouro": "Rua",
+    "end_logradouro": "das Palmeiras",
+    "end_numero": 89,
+    "end_complemento": "",
+    "end_bairro": "Vila Olímpia",
+    "cid_id": 9
+  }
+  ```
+ou dados especificos como exemplo:
+```json
+  {
+    "pes_nome": "Gabriel Ferreira",
+    "se_matricula": "2024-007",
+    "pes_sexo": "Masculino",
+    "end_tipo_logradouro": "Avenida",
+    "end_logradouro": "das Saudades",
+    "end_numero": 1345,
+    "end_complemento": "Torre 1 ap.:601",
+    "end_bairro": "Providência",
+    "cid_id": 9
+  }
+  ```
+Observação: essa regra se aplica para todas as rotas.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Segurança Vulnerabilidades
+
+Se você descobrir alguma vulnerabilidade de segurança por favor mande um e-mail para Luiz Santos via [luizcsdev@gmail.com](mailto:luizcsdev@gmail.com). 
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Esse projeto é open-source e é um software licenciado para [MIT license](https://opensource.org/licenses/MIT).
