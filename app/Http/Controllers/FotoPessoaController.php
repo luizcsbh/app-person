@@ -115,6 +115,7 @@ class FotoPessoaController extends Controller
      *     path="/fotos-pessoas/{pesId}",
      *     summary="Obter foto de uma pessoa",
      *     tags={"Foto Pessoa"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="pesId",
      *         in="path",

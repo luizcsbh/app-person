@@ -32,6 +32,27 @@ class Handler extends ExceptionHandler
         });
     }
 
+    public function render($request, Throwable $exception)
+    {
+        // Token expirado
+        if ($exception instanceof \Laravel\Sanctum\Exceptions\MissingAbilityException) {
+            return response()->json([
+                'message' => 'Token expirado',
+                'error' => 'token_expired'
+            ], 401);
+        }
+
+        // Acesso não autorizado
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            return response()->json([
+                'message' => 'Não autorizado',
+                'error' => 'unauthenticated'
+            ], 401);
+        }
+
+        return parent::render($request, $exception);
+    }
+
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         return $request->expectsJson()

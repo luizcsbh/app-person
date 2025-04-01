@@ -1,52 +1,56 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FotoPessoaController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\LotacaoController;
 use App\Http\Controllers\ServidorEfetivoController;
 use App\Http\Controllers\ServidorTemporarioController;
 
-/*----------------------------------------------------------
-| Rotas Públicas (sem autenticação)
-|----------------------------------------------------------*/
-Route::prefix('auth')->group(function() {
-    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
-    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-});
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Todas as rotas API são prefixadas com '/api' pelo RouteServiceProvider
+| e protegidas por middlewares adequados.
+|
+*/
 
-/*----------------------------------------------------------
-| Rotas Protegidas (com prefixo /api e autenticação Sanctum)
-|----------------------------------------------------------*/
-Route::middleware(['auth:sanctum', 'expire.token'])->group(function() {
-    // Rotas de autenticação
+Route::prefix('v1')->group(function() {
+    // Rotas Públicas
     Route::prefix('auth')->group(function() {
-        Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-        Route::get('/user', [AuthController::class, 'userProfile'])->name('auth.user');
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('login', [AuthController::class, 'login']);
     });
-    
-    // Rotas de recursos
-    Route::resource('unidades', UnidadeController::class);
-    Route::resource('lotacoes', LotacaoController::class);
-    Route::resource('servidores-efetivos', ServidorEfetivoController::class);
-    Route::resource('servidores-temporarios', ServidorTemporarioController::class);
-    
-    // Rotas customizadas
-    Route::get('lotacoes/unidade/{unid_id}/servidores', [LotacaoController::class, 'servidoresPorUnidade'])
-        ->name('lotacoes.servidores-por-unidade');
 
-    Route::get('/servidores-efetivos/endereco-funcional', [ServidorEfetivoController::class, 'consultarEnderecoFuncional']);
+    // Rotas Protegidas
+    Route::middleware(['auth:sanctum', 'api'])->group(function() {
+        // Autenticação
+        Route::prefix('auth')->group(function() {
+            Route::post('logout', [AuthController::class, 'logout']);
+            Route::get('user', [AuthController::class, 'userProfile']);
+            Route::post('refresh', [AuthController::class, 'refreshToken']);
+        });
 
-    Route::prefix('fotos-pessoas')->group(function() {
-        Route::post('/', [FotoPessoaController::class, 'store']);
-        Route::get('/{pesId}', [FotoPessoaController::class, 'show']);
+        // Recursos
+        Route::apiResources([
+            'unidades' => UnidadeController::class,
+            'lotacoes' => LotacaoController::class,
+            'servidores-efetivos' => ServidorEfetivoController::class,
+            'servidores-temporarios' => ServidorTemporarioController::class,
+        ]);
+
+        // Rotas Customizadas
+        Route::get('lotacoes/unidade/{unidade}/servidores', [LotacaoController::class, 'servidoresPorUnidade']);
+        Route::get('servidores-efetivos/{servidor}/endereco-funcional', [ServidorEfetivoController::class, 'consultarEnderecoFuncional']);
+
+        // Fotos
+        Route::prefix('fotos-pessoas')->group(function() {
+            Route::post('/', [FotoPessoaController::class, 'store']);
+            Route::get('/{pessoa}', [FotoPessoaController::class, 'show']);
+            Route::delete('/{pessoa}', [FotoPessoaController::class, 'destroy']);
+        });
     });
 });
-
-/*----------------------------------------------------------
-| Rotas Públicas Opcionais (se necessário)
-|----------------------------------------------------------*/
-// Caso precise de algumas rotas públicas para consulta:
-// Route::get('/public/unidades', [UnidadeController::class, 'index'])->name('public.unidades.index');
-// Route::get('/public/unidades/{id}', [UnidadeController::class, 'show'])->name('public.unidades.show');

@@ -15,58 +15,11 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api",
+            "url": "http://localhost:8000/api/v1/",
             "description": "Servidor Local"
         }
     ],
     "paths": {
-        "/auth/register": {
-            "post": {
-                "tags": [
-                    "Autenticação"
-                ],
-                "summary": "Registrar um novo usuário",
-                "operationId": "ed42f392010c301892e640067141676e",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "João Silva"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "joao@email.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "example": "12345678"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Usuário registrado com sucesso"
-                    },
-                    "422": {
-                        "description": "Dados inválidos"
-                    }
-                }
-            }
-        },
         "/auth/login": {
             "post": {
                 "tags": [
@@ -101,12 +54,81 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login bem-sucedido"
+                        "description": "Login bem-sucedido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "refresh_token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Credenciais inválidas"
+                    },
+                    "403": {
+                        "description": "Acesso não permitido para este domínio"
                     }
                 }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Renovar token de acesso",
+                "operationId": "f6c9683ed975ace7d035a09e6e2a9332",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "refresh_token"
+                                ],
+                                "properties": {
+                                    "refresh_token": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token renovado com sucesso"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    },
+                    "403": {
+                        "description": "Token de refresh inválido"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/auth/logout": {
@@ -119,28 +141,6 @@
                 "responses": {
                     "200": {
                         "description": "Logout bem-sucedido"
-                    },
-                    "401": {
-                        "description": "Não autorizado"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/auth/user": {
-            "get": {
-                "tags": [
-                    "Autenticação"
-                ],
-                "summary": "Obter informações do usuário autenticado",
-                "operationId": "59edbaa8fa646672a192bb68493f46d5",
-                "responses": {
-                    "200": {
-                        "description": "Dados do usuário autenticado"
                     },
                     "401": {
                         "description": "Não autorizado"
@@ -333,7 +333,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/lotacoes": {
