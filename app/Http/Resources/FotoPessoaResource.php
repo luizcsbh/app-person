@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;  
+use Illuminate\Support\Facades\Storage;
 
 class FotoPessoaResource extends JsonResource
 {
@@ -15,27 +15,45 @@ class FotoPessoaResource extends JsonResource
             'fp_data' => $this->fp_data->toDateTimeString(),
             'url' => $this->getUrl(),
             'hash' => $this->ft_hash,
-            'bucket' => $this->fp_bucket
+            'bucket' => $this->fp_bucket,
+            'fp_arquivo' => $this->fp_arquivo // Adicionado para referência
         ];
     }
 
     protected function getUrl()
     {
-        // Obtém a extensão do arquivo (assumindo que o nome do arquivo contém a extensão)
-        $extension = pathinfo($this->fp_arquivo, PATHINFO_EXTENSION);
-        
-        // Constrói o caminho completo do arquivo
-        $filePath = "fotos-pessoas/{$this->fp_id}.{$extension}";
-        
-        // Retorna a URL assinada (válida por tempo limitado)
-        if (method_exists(Storage::disk($this->fp_bucket), 'temporaryUrl')) {
-            return Storage::disk($this->fp_bucket)->temporaryUrl(
-                $filePath,
-                now()->addMinutes(5)
-            );
-        }
+        try {
+            $disk = Storage::disk($this->fp_bucket);
+            
+            // Verifica se o arquivo existe
+            if (!$this->fileExists($disk)) {
+                return null;
+            }
 
-        // Fallback for storage drivers that do not support temporaryUrl
-        return Storage::disk($this->fp_bucket)->url($filePath);
+            // Tenta gerar URL temporária para S3/MinIO
+            if (config('filesystems.disks.'.$this->fp_bucket.'.driver') === 's3') {
+                return $disk->temporaryUrl(
+                    $this->fp_arquivo,
+                    now()->addMinutes(30)
+                );
+            }
+
+            // Fallback para URL pública
+            return $disk->url($this->fp_arquivo);
+
+        } catch (\Exception $e) {
+            report($e); // Loga o erro sem quebrar a aplicação
+            return null;
+        }
+    }
+
+    protected function fileExists($disk)
+    {
+        try {
+            return $disk->exists($this->fp_arquivo);
+        } catch (\Exception $e) {
+            report($e);
+            return false;
+        }
     }
 }
