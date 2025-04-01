@@ -6,12 +6,8 @@ use App\Models\FotoPessoa;
 
 interface FotoPessoaRepositoryInterface 
 {
-    public function storeFoto(array $data, $file);
-
-    public function create(array $data);
-
-    public function getFotoById(string $id);
-
-    public function deleteFoto(string $id);
+    public function criar(array $dados): FotoPessoa;
+    public function buscarPorHash(string $hash): ?FotoPessoa;
+    public function buscarPorPessoa(int $pesId): ?FotoPessoa;
 
 }

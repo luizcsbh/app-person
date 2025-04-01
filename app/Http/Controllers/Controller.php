@@ -50,6 +50,10 @@ use Illuminate\Routing\Controller as BaseController;
  *     name="Endereço",
  *     description="Gerenciamento dos endereços"
  * ),
+ *  * @OA\Tag(
+ *     name="Foto Pessoa",
+ *     description="Gerenciamento dos fotos"
+ * ),
  */
 class Controller extends BaseController
 {

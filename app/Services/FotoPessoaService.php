@@ -2,74 +2,60 @@
 
 namespace App\Services;
 
-use App\Repositories\FotoPessoaRepository;
+use App\Repositories\Contracts\FotoPessoaRepositoryInterface;
+use App\Services\Contracts\StorageServiceInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Validator;
-use App\Exceptions\InvalidFileException;
-use Illuminate\Support\Facades\Storage;
-
-
 
 class FotoPessoaService
 {
+    public function __construct(
+        private FotoPessoaRepositoryInterface $repository,
+        private StorageServiceInterface $storageService
+    ) {}
 
-    public function __construct(private FotoPessoaRepository $fotoPessoaRepository)
-    {}
-
-    /**
-     * Armazena uma foto no MinIO e no banco de dados
-     *
-     * @param array $data Dados da foto (deve conter 'pes_id')
-     * @param UploadedFile $file Arquivo de imagem
-     * @return FotoPessoa
-     * @throws \Exception
-     */
-    public function storeFoto(array $data, UploadedFile $file)
+    public function uploadFotoPessoa(int $pesId, UploadedFile $foto): array
     {
+        
+        // Gerar hash único para a imagem
+        $hash = hash_file('sha256', $foto->path());
        
-        $this->validateFile($file);
+        // Verificar se já existe uma foto com o mesmo hash
+        if ($this->repository->buscarPorHash($hash)) {
+            throw new \Exception('Esta imagem já foi cadastrada anteriormente.');
+        }
+
+        // Gerar nome do arquivo
+        $nomeArquivo = $this->gerarNomeArquivo($foto, $hash);
+       
+        $bucket = config('filesystems.disks.minio.bucket');
         
-        $filePath = 'fotos-pessoas/' . Str::uuid() . '.' . $file->extension();
-    
-        Storage::disk('minio')->put($filePath, file_get_contents($file->getRealPath()));
-        
-        return $this->fotoPessoaRepository->create([
-            'fp_id' => Str::uuid(),
-            'pes_id' => $data['pes_id'],
-            'fp_arquivo' => $filePath,
-            'fp_bucket' => 'minio',
-            'fp_data' => now(),
-            'ft_hash' => hash_file('sha256', $file->getRealPath())
-        ]);
-    }
-
-    public function getFoto(string $id)
-    {
-        return $this->fotoPessoaRepository->getFotoById($id);
-    }
-
-    public function removeFoto(string $id)
-    {
-        return $this->fotoPessoaRepository->deleteFoto($id);
-    }
-
-    protected function validateFile(UploadedFile $file)
-    {
-        $validator = Validator::make(
-            ['foto' => $file],
-            [
-                'foto' => [
-                    'required',
-                    'image',
-                    'mimes:jpeg,png,jpg,gif',
-                    'max:2048' // 2MB
-                ]
-            ]
+        // Fazer upload para o MinIO
+        $caminhoArquivo = $this->storageService->upload(
+            $bucket,
+            $nomeArquivo,
+            $foto
         );
 
-        if ($validator->fails()) {
-            throw new InvalidFileException($validator->errors()->first());
-        }
+       
+        // Salvar metadados no banco
+        $fotoPessoa = $this->repository->criar([
+            'pes_id' => $pesId,
+            'fp_data' => now()->toDateString(),
+            'fp_arquivo' => $nomeArquivo,
+            'fp_bucket' => $bucket,
+            'fp_hash' => $hash,
+        ]);
+
+        return [
+            'foto' => $fotoPessoa,
+            'url' => $this->storageService->getUrl($bucket, $nomeArquivo)
+        ];
+    }
+
+    private function gerarNomeArquivo(UploadedFile $foto, string $hash): string
+    {
+        $extensao = $foto->getClientOriginalExtension();
+        return "pessoas/{$hash}.{$extensao}";
     }
 }

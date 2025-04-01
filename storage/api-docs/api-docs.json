@@ -153,13 +153,13 @@
                 ]
             }
         },
-        "/api/fotos-pessoa": {
+        "/fotos-pessoas": {
             "post": {
                 "tags": [
-                    "Fotos"
+                    "Foto Pessoa"
                 ],
-                "summary": "Upload de foto de pessoa",
-                "operationId": "6263382d88ba4c24dde1ae321ba5e3d1",
+                "summary": "Upload de foto para uma pessoa",
+                "operationId": "4f2605be4c6ef9cc44c502f85b426902",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -171,10 +171,12 @@
                                 ],
                                 "properties": {
                                     "pes_id": {
-                                        "type": "string",
-                                        "example": "uuid"
+                                        "description": "ID da pessoa",
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "foto": {
+                                        "description": "Arquivo de imagem (JPEG, PNG, GIF)",
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -186,56 +188,150 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Foto armazenada com sucesso"
+                        "description": "Foto cadastrada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "foto": {
+                                                    "$ref": "#/components/schemas/FotoPessoa"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "example": "http://minio:9000/bucket/pessoas/abc123.jpg"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Foto cadastrada com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro no upload",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Esta imagem já foi cadastrada anteriormente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erro de validação"
+                        "description": "Validação falhou",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "O campo pes_id é obrigatório."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "pes_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "O campo pes_id é obrigatório."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/api/fotos-pessoa/{id}": {
+        "/fotos-pessoas/{pesId}": {
             "get": {
                 "tags": [
-                    "Fotos"
+                    "Foto Pessoa"
                 ],
-                "summary": "Obter foto de pessoa",
-                "operationId": "9d99732474e766fd92263967b193cd3f",
+                "summary": "Obter foto de uma pessoa",
+                "operationId": "a0e6632f4d55f94a7f38ad07c110a0e7",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "pesId",
                         "in": "path",
-                        "required": true
+                        "description": "ID da pessoa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Dados da foto"
+                        "description": "Foto encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/FotoPessoa"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Foto não encontrada"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Fotos"
-                ],
-                "summary": "Remover foto de pessoa",
-                "operationId": "c46580d0c8b45bf0cf32ed3be4a0fd0e",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Foto removida"
-                    },
-                    "404": {
-                        "description": "Foto não encontrada"
+                        "description": "Foto não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Foto não encontrada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2710,6 +2806,49 @@
                 },
                 "type": "object"
             },
+            "FotoPessoa": {
+                "required": [
+                    "fp_id",
+                    "pes_id",
+                    "fp_hash"
+                ],
+                "properties": {
+                    "fp_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "pes_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "fp_data": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-01"
+                    },
+                    "fp_arquivo": {
+                        "type": "string",
+                        "example": "pessoas/abc123.jpg"
+                    },
+                    "fp_bucket": {
+                        "type": "string",
+                        "example": "laravel-app"
+                    },
+                    "fp_hash": {
+                        "type": "string",
+                        "example": "e608dea6de582b3e1c24cb9556a2fd008a7a8e701559192384605a55794a002e"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "Lotacao": {
                 "title": "Lotação",
                 "description": "Modelo de Lotação",
@@ -3004,8 +3143,8 @@
             "description": "Gerenciamento das lotações"
         },
         {
-            "name": "Fotos",
-            "description": "Fotos"
+            "name": "Foto Pessoa",
+            "description": "Gerenciamento dos fotos"
         }
     ],
     "security": [

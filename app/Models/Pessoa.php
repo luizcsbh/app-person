@@ -106,4 +106,15 @@ class Pessoa extends Model
         return $this->hasOne(FotoPessoa::class, 'pes_id');
     }
 
+    public function getIdadeAttribute()
+    {
+        return now()->diffInYears($this->pes_data_nascimento);
+    }
+    public function lotacaoAtiva()
+    {
+        return $this->hasOne(Lotacao::class, 'pes_id')
+                   ->whereNull('lot_data_remocao')
+                   ->latest('lot_data_lotacao');
+    }
+
 }

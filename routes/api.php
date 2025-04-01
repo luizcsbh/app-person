@@ -38,10 +38,9 @@ Route::middleware(['auth:sanctum', 'expire.token'])->group(function() {
 
     Route::get('/servidores-efetivos/endereco-funcional', [ServidorEfetivoController::class, 'consultarEnderecoFuncional']);
 
-    Route::prefix('fotos-pessoa')->group(function() {
+    Route::prefix('fotos-pessoas')->group(function() {
         Route::post('/', [FotoPessoaController::class, 'store']);
-        Route::get('/{id}', [FotoPessoaController::class, 'show']);
-        Route::delete('/{id}', [FotoPessoaController::class, 'destroy']);
+        Route::get('/{pesId}', [FotoPessoaController::class, 'show']);
     });
 });
 

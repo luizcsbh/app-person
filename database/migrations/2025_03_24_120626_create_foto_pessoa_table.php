@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('foto_pessoa', function (Blueprint $table) {
-            $table->id('ft_id');
+            $table->id('fp_id');
             $table->unsignedBigInteger('pes_id');
-            $table->date('ft_data')->index();
-            $table->string('ft_bucket', 50);
-            $table->string('ft_hash', 64)->unique();
+            $table->date('fp_data')->index();
+            $table->string('fp_arquivo');
+            $table->string('fp_bucket', 50);
+            $table->string('fp_hash', 64)->unique();
             $table->timestamps();
 
             $table->foreign('pes_id')->references('pes_id')->on('pessoas')->onDelete('cascade');

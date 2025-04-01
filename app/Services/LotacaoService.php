@@ -150,15 +150,15 @@ class LotacaoService
      * // Com paginação personalizada
      * $servidores = $service->getServidoresPorUnidade(1, 20);
      */
-    public function getServidoresPorUnidade(int $unidId, int $perPage = 10)
+    public function getServidoresPorUnidade(int $unidId, int $perPage)
     {
         if (!$this->unidadeRepository->unidadeExists($unidId)) {
             throw new \Exception('Unidade não encontrada!', 404); 
         }
 
-        $query = $this->lotacaoRepository->getServidoresPorUnidadeQuery($unidId);
-
-        return $query->paginate($perPage);
+        $query = $this->pessoaRepository->buscarServidoresPorUnidade($unidId, $perPage);
+        
+        return $query;
             
     }
     

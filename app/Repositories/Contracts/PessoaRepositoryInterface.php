@@ -23,4 +23,6 @@ interface PessoaRepositoryInterface
     public function getMainEndereco(Pessoa $pessoa);
 
     public function loadRelations(Pessoa $pessoa, array $relations);
+
+    public function buscarServidoresPorUnidade(int $unidId,int $perPage);
 }

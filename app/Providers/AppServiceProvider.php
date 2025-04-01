@@ -16,6 +16,8 @@ use App\Repositories\PessoaRepository;
 use App\Repositories\ServidorEfetivoRepository;
 use App\Repositories\ServidorTemporarioRepository;
 use App\Repositories\UnidadeRepository;
+use App\Services\Contracts\StorageServiceInterface;
+use App\Services\MinIOStorageService;
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerRepositories();
+        $this->app->bind(StorageServiceInterface::class, MinIOStorageService::class);
     }
 
     /**
@@ -51,11 +54,13 @@ class AppServiceProvider extends ServiceProvider
     protected function registerRepositories(): void
     {
         $this->app->bind(PessoaRepositoryInterface::class, PessoaRepository::class);
+       
         $this->app->bind(LotacaoRepositoryInterface::class, LotacaoRepository::class);
         $this->app->bind(UnidadeRepositoryInterface::class, UnidadeRepository::class);
         $this->app->bind(EnderecoRepositoryInterface::class, EnderecoRepository::class);
         $this->app->bind(FotoPessoaRepositoryInterface::class, FotoPessoaRepository::class);
         $this->app->bind(ServidorEfetivoRepositoryInterface::class, ServidorEfetivoRepository::class);
         $this->app->bind(ServidorTemporarioRepositoryInterface::class, ServidorTemporarioRepository::class);
+        
     }
 }

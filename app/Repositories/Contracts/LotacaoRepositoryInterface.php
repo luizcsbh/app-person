@@ -18,6 +18,4 @@ interface LotacaoRepositoryInterface
 
     public function delete(int $id);
 
-    public function getServidoresPorUnidadeQuery(int $unidId);
-
 }
