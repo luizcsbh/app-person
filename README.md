@@ -9,7 +9,7 @@ O projeto API REST desenvolvida em PHP com Laravel de acordo com o modelo de ban
 # Requesitos do Sistema
 Linguagem de programação PHP.
 
-Container com Sertvidor Min.io para armazenamento de objetos S3 ![MinIO](https://min.io/).
+Container com Sertvidor Min.io para armazenamento de objetos S3 https://min.io/.
 
 Container com Servidor de banco de dados PostgreSQL.
 
